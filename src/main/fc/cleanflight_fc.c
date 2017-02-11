@@ -771,7 +771,9 @@ void subTaskMotorUpdate(void)
         debug[3] = currentDeltaTime - targetPidLooptime;
         previousMotorUpdateTime = startTime;
     }
-
+    // Just read the value on AUXN
+    // Set servo values of 1-6 based on it
+    // Then write
     mixTable();
 
 #ifdef USE_SERVOS
@@ -780,7 +782,7 @@ void subTaskMotorUpdate(void)
 #endif
 
     if (motorControlEnable) {
-        writeMotors();
+        //writeMotors();
     }
     if (debugMode == DEBUG_PIDLOOP) {debug[3] = micros() - startTime;}
 }
@@ -881,6 +883,16 @@ void taskPid(void)
     }
 #endif
 
+}
+
+bool taskLightsCheck()
+{
+    return true;
+}
+
+void taskLights(void)
+{
+    writeServos();
 }
 
 void taskUpdateAccelerometer(void)

@@ -57,6 +57,13 @@ cfTask_t cfTasks[] = {
         .desiredPeriod = TASK_PERIOD_HZ(8000),
         .staticPriority = TASK_PRIORITY_REALTIME,
     },
+    [TASK_LIGHTS] = {
+        .taskName = "LIGHTS",
+        .checkFunc = taskLightsCheck,
+        .taskFunc = taskLights,
+        .desiredPeriod = TASK_PERIOD_HZ(8000),
+        .staticPriority = TASK_PRIORITY_HIGH,
+    },
 
     [TASK_ACCEL] = {
         .taskName = "ACCEL",

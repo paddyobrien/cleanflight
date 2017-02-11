@@ -223,7 +223,7 @@ void mixerInitServos(servoMixer_t *initialCustomServoMixers)
 
     // give all servos a default command
     for (uint8_t i = 0; i < MAX_SUPPORTED_SERVOS; i++) {
-        servo[i] = DEFAULT_SERVO_MIDDLE;
+        servo[i] = 0;
     }
 }
 
@@ -342,67 +342,36 @@ static void updateGimbalServos(uint8_t firstServoIndex)
     pwmWriteServo(firstServoIndex + 1, servo[SERVO_GIMBAL_ROLL]);
 }
 
+int scaleInput(inputChannel) {
+    int minRc = 1159;
+    int maxRc = 1841;
+    int range = maxRc - minRc; //1075
+    int step = range/100; //11
+    int input = rcData[inputChannel] - minRc; //2100
+    float scaled = input / step;
+    if (scaled < 0) {
+        input = 0;
+    }
+
+    if (scaled > 100 - step) {
+        scaled = 100;
+    }
+    return scaled;
+}
+
 void writeServos(void)
 {
-    uint8_t servoIndex = 0;
+    int scaledInput = scaleInput(AUX3);
+    int servoCount = 6;
+    int lightBankCount = 8;
+    int step = 100 / servoCount;
 
-    switch (mixerConfig()->mixerMode) {
-        case MIXER_BICOPTER:
-            pwmWriteServo(servoIndex++, servo[SERVO_BICOPTER_LEFT]);
-            pwmWriteServo(servoIndex++, servo[SERVO_BICOPTER_RIGHT]);
-            break;
-
-        case MIXER_TRI:
-        case MIXER_CUSTOM_TRI:
-            if (mixerConfig()->tri_unarmed_servo) {
-                // if unarmed flag set, we always move servo
-                pwmWriteServo(servoIndex++, servo[SERVO_RUDDER]);
-            } else {
-                // otherwise, only move servo when copter is armed
-                if (ARMING_FLAG(ARMED))
-                    pwmWriteServo(servoIndex++, servo[SERVO_RUDDER]);
-                else
-                    pwmWriteServo(servoIndex++, 0); // kill servo signal completely.
-            }
-            break;
-
-        case MIXER_FLYING_WING:
-            pwmWriteServo(servoIndex++, servo[SERVO_FLAPPERON_1]);
-            pwmWriteServo(servoIndex++, servo[SERVO_FLAPPERON_2]);
-            break;
-
-        case MIXER_DUALCOPTER:
-            pwmWriteServo(servoIndex++, servo[SERVO_DUALCOPTER_LEFT]);
-            pwmWriteServo(servoIndex++, servo[SERVO_DUALCOPTER_RIGHT]);
-            break;
-
-        case MIXER_CUSTOM_AIRPLANE:
-        case MIXER_AIRPLANE:
-            for (int i = SERVO_PLANE_INDEX_MIN; i <= SERVO_PLANE_INDEX_MAX; i++) {
-                pwmWriteServo(servoIndex++, servo[i]);
-            }
-            break;
-
-        case MIXER_SINGLECOPTER:
-            for (int i = SERVO_SINGLECOPTER_INDEX_MIN; i <= SERVO_SINGLECOPTER_INDEX_MAX; i++) {
-                pwmWriteServo(servoIndex++, servo[i]);
-            }
-            break;
-
-        default:
-            break;
-    }
-
-    // Two servos for SERVO_TILT, if enabled
-    if (feature(FEATURE_SERVO_TILT) || mixerConfig()->mixerMode == MIXER_GIMBAL) {
-        updateGimbalServos(servoIndex);
-        servoIndex += 2;
-    }
-
-    // forward AUX to remaining servo outputs (not constrained)
-    if (feature(FEATURE_CHANNEL_FORWARDING)) {
-        forwardAuxChannelsToServos(servoIndex);
-        servoIndex += MAX_AUX_CHANNEL_COUNT;
+    for(int i = 0; i <= lightBankCount; i++) {
+        if (scaledInput > (i * step)) {
+            servo[i] = 2000;
+        } else {
+            servo[i] = 1000;
+        }
     }
 }
 

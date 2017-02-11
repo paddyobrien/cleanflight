@@ -785,8 +785,11 @@ void configureScheduler(void)
     rescheduleTask(TASK_GYRO, gyroPeriodUs);
     setTaskEnabled(TASK_GYRO, true);
 
-    rescheduleTask(TASK_PID, gyroPeriodUs);
-    setTaskEnabled(TASK_PID, true);
+    // rescheduleTask(TASK_PID, gyroPeriodUs);
+    // setTaskEnabled(TASK_PID, true);
+
+    rescheduleTask(TASK_LIGHTS, gyroPeriodUs);
+    setTaskEnabled(TASK_LIGHTS, true);
 
     if (sensors(SENSOR_ACC)) {
         setTaskEnabled(TASK_ACCEL, true);

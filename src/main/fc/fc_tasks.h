@@ -22,6 +22,7 @@ typedef enum {
     TASK_SYSTEM = 0,
     TASK_GYRO,
     TASK_PID,
+    TASK_LIGHTS,
     TASK_ACCEL,
     TASK_ATTITUDE,
     TASK_RX,
@@ -71,6 +72,8 @@ bool taskGyroCheck(uint32_t currentDeltaTime);
 void taskGyro(void);
 bool taskPidCheck(uint32_t currentDeltaTime);
 void taskPid(void);
+bool taskLightsCheck();
+void taskLights(void);
 void taskUpdateAccelerometer(void);
 void taskUpdateAttitude(void);
 bool taskUpdateRxCheck(uint32_t currentDeltaTime);
