@@ -342,18 +342,18 @@ static void updateGimbalServos(uint8_t firstServoIndex)
     pwmWriteServo(firstServoIndex + 1, servo[SERVO_GIMBAL_ROLL]);
 }
 
-int scaleInput(inputChannel) {
-    int minRc = 1159;
-    int maxRc = 1841;
-    int range = maxRc - minRc; //1075
-    int step = range/100; //11
-    int input = rcData[inputChannel] - minRc; //2100
+float scaleInput(inputChannel) {
+    float minRc = 1159;
+    float maxRc = 1841;
+    float range = maxRc - minRc;//800
+    float step = range/100; //11;
+    float input = rcData[inputChannel] - minRc;
     float scaled = input / step;
     if (scaled < 0) {
         input = 0;
     }
 
-    if (scaled > 100 - step) {
+    if (scaled > 100) {
         scaled = 100;
     }
     return scaled;
@@ -361,16 +361,15 @@ int scaleInput(inputChannel) {
 
 void writeServos(void)
 {
-    int scaledInput = scaleInput(AUX3);
-    int servoCount = 6;
-    int lightBankCount = 8;
-    int step = 100 / servoCount;
+    float scaledInput = scaleInput(AUX3);
+    int lightBankCount = 6;
+    float step = 100 / lightBankCount;
 
-    for(int i = 0; i <= lightBankCount; i++) {
-        if (scaledInput > (i * step)) {
+    for(int i = 0; i < lightBankCount; i++) {
+        if (scaledInput == 100 || scaledInput > (i * step)) {
             servo[i] = 2000;
         } else {
-            servo[i] = 1000;
+            servo[i] = 0;
         }
     }
 }
