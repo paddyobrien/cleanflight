@@ -781,9 +781,9 @@ void configureScheduler(void)
     schedulerInit();
     setTaskEnabled(TASK_SYSTEM, true);
 
-    uint16_t gyroPeriodUs = US_FROM_HZ(gyro.sampleFrequencyHz);
-    rescheduleTask(TASK_GYRO, gyroPeriodUs);
-    setTaskEnabled(TASK_GYRO, true);
+    // uint16_t gyroPeriodUs = US_FROM_HZ(gyro.sampleFrequencyHz);
+    // // rescheduleTask(TASK_GYRO, gyroPeriodUs);
+    // // setTaskEnabled(TASK_GYRO, true);
 
     // rescheduleTask(TASK_PID, gyroPeriodUs);
     // setTaskEnabled(TASK_PID, true);
@@ -791,12 +791,12 @@ void configureScheduler(void)
     rescheduleTask(TASK_LIGHTS, gyroPeriodUs);
     setTaskEnabled(TASK_LIGHTS, true);
 
-    if (sensors(SENSOR_ACC)) {
-        setTaskEnabled(TASK_ACCEL, true);
-        rescheduleTask(TASK_ACCEL, accSamplingInterval);
-    }
+    // if (sensors(SENSOR_ACC)) {
+    //     setTaskEnabled(TASK_ACCEL, true);
+    //     rescheduleTask(TASK_ACCEL, accSamplingInterval);
+    // }
 
-    setTaskEnabled(TASK_ATTITUDE, sensors(SENSOR_ACC));
+    // setTaskEnabled(TASK_ATTITUDE, sensors(SENSOR_ACC));
     setTaskEnabled(TASK_SERIAL, true);
     setTaskEnabled(TASK_HARDWARE_WATCHDOG, true);
 #ifdef BEEPER
